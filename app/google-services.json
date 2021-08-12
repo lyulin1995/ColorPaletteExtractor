@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "486548015526",
+    "project_id": "colorpaletteextractor",
+    "storage_bucket": "colorpaletteextractor.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:486548015526:android:a8cdfe46577723f3ac2767",
+        "android_client_info": {
+          "package_name": "com.lys.testapplication"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "486548015526-ja07m337csb9lm10teene07hieeit24f.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDkpGDvJY1ziH0_8cYUe3dJlNElhlWnaqk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "486548015526-ja07m337csb9lm10teene07hieeit24f.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

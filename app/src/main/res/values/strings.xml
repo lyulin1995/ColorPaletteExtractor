@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">TestApplication</string>
+    <string name="btn_label_camera">Camera</string>
+    <string name="btn_label_back">Back</string>
+    <string name="btn_label_gallery">Gallery</string>
+    <string name="btn_label_editPalette">Edit</string>
+    <string name="btn_label_savePalette">Save</string>
+    <string name="title_savedPalette">Saved Palette</string>
+
+</resources>
