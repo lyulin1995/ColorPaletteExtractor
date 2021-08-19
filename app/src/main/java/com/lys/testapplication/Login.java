@@ -85,7 +85,6 @@ public class Login extends AppCompatActivity {
                                     }
                                 });
 
-
                             }
                         }).setNegativeButton("Cancel", null)
                         .setView(view)
