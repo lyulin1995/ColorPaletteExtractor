@@ -13,6 +13,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.TestApplication">
+        <activity android:name=".UploadActivity"></activity>
         <activity
             android:name=".ResetPassword"
             android:exported="true" />
@@ -37,10 +38,9 @@
 
         <provider
             android:name="androidx.core.content.FileProvider"
-            android:authorities="com.lys.android.fileprovider"
+            android:authorities="com.lys.android.fileProvider"
             android:exported="false"
-            android:grantUriPermissions="true"
-            android:requestLegacyExternalStorage="true">
+            android:grantUriPermissions="true">
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/file_paths" />

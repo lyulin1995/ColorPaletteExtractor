@@ -9,6 +9,7 @@ import androidx.core.content.FileProvider;
 
 import android.Manifest;
 import android.app.Activity;
+import android.content.ActivityNotFoundException;
 import android.content.ContentResolver;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -26,6 +27,9 @@ import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.UserInfo;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -42,12 +46,18 @@ public class CameraActivity extends AppCompatActivity {
     public static final int GALLERY_REQUEST_CODE = 105;
     // Camera and Storage permission on same time
     public static final int All_PERMS_CODE = 1101;
+
+    public static final String TAG = "Camera activity";
+
     ImageView selectedImage;
     Button cameraBtn, galleryBtn;
     String currentPhotoPath;
+    boolean submitByCamera;
     StorageReference storageReference;
+    private String uid;
+    static final int REQUEST_IMAGE_CAPTURE = 1;
 
-
+    // Get user-account Id from firebase
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,13 +67,17 @@ public class CameraActivity extends AppCompatActivity {
         cameraBtn = findViewById(R.id.cameraBtn);
         galleryBtn = findViewById(R.id.galleryBtn);
 
+        FirebaseUser loggedInUser = FirebaseAuth.getInstance().getCurrentUser();
+        for (UserInfo profile : loggedInUser.getProviderData()){
+            uid = profile.getUid();
+        }
         // initialize the storage difference
         storageReference = FirebaseStorage.getInstance().getReference();
 
         cameraBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                askCameraPermissions();
+                onClickCamera(v);
             }
         });
 
@@ -74,8 +88,53 @@ public class CameraActivity extends AppCompatActivity {
                 startActivityForResult(gallery, GALLERY_REQUEST_CODE);
             }
         });
-
     }
+
+    public void onClickCamera(View v){
+        // Check if the permissions are granted.
+        // If one is not granted, request it
+
+        if ((ContextCompat.checkSelfPermission(
+                CameraActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE) !=
+                PackageManager.PERMISSION_GRANTED) || (ContextCompat.checkSelfPermission(
+                CameraActivity.this, Manifest.permission.CAMERA ) !=
+                PackageManager.PERMISSION_GRANTED) || (ContextCompat.checkSelfPermission(
+                CameraActivity.this, Manifest.permission.ACCESS_FINE_LOCATION ) !=
+                PackageManager.PERMISSION_GRANTED)) {
+            requestPermissions(
+                    new String[] { Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.CAMERA, Manifest.permission.ACCESS_FINE_LOCATION},
+                    1);
+        }
+        // If the permissions are granted and submitByCamera is true,
+        // i.e. we want to submit by camera, we create a new intent for this.
+        if ((ContextCompat.checkSelfPermission(
+                CameraActivity.this, Manifest.permission.CAMERA) ==
+                PackageManager.PERMISSION_GRANTED)){
+            Log.d(TAG, "Camera");
+            submitByCamera = true;
+            Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+            // Ensure that there's a camera activity to handle the intent
+            if (getApplicationContext().getPackageManager().hasSystemFeature(
+                    PackageManager.FEATURE_CAMERA)) {
+                // Create the File where the photo should go
+                File photoFile = null;
+                try {
+                    photoFile = createImageFile();
+                } catch (IOException ex) {
+                    // Error occurred while creating the File
+                }
+                // Continue only if the File was successfully created
+                if (photoFile != null) {
+                    Uri photoURI = FileProvider.getUriForFile(this,
+                            "com.example.android.fileProvider",
+                            photoFile);
+                    takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+                    startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
+                }
+            }
+        }
+    }
+
 
     private void askCameraPermissions() {
         String[] permissions = {Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE};
@@ -99,9 +158,12 @@ public class CameraActivity extends AppCompatActivity {
 
     }
 
+
+
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int [] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
         if (requestCode == CAMERA_PERM_CODE) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 dispatchTakePictureIntent();
@@ -126,7 +188,6 @@ public class CameraActivity extends AppCompatActivity {
                 Uri contentUri = Uri.fromFile(f);
                 mediaScanIntent.setData(contentUri);
                 this.sendBroadcast(mediaScanIntent);
-
                 // We need two things: file name and file location.
                 uploadImageToFirebase(f.getName(), contentUri);
 
@@ -140,10 +201,7 @@ public class CameraActivity extends AppCompatActivity {
                 String imageFileName = "JPEG_" + timeStamp +"."+getFileExt(contentUri);
                 Log.d("tag", "onActivityResult: Gallery Image Uri:  " +  imageFileName);
 //                selectedImage.setImageURI(contentUri);
-
                 uploadImageToFirebase(imageFileName, contentUri);
-
-
             }
         }
 
@@ -203,23 +261,25 @@ public class CameraActivity extends AppCompatActivity {
 
 
     private void dispatchTakePictureIntent() {
+
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         // Ensure that there's a camera activity to handle the intent
-        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+        if (getApplicationContext().getPackageManager().hasSystemFeature(
+                PackageManager.FEATURE_CAMERA)) {
             // Create the File where the photo should go
             File photoFile = null;
             try {
                 photoFile = createImageFile();
             } catch (IOException ex) {
-
+                // Error occurred while creating the File
             }
             // Continue only if the File was successfully created
             if (photoFile != null) {
                 Uri photoURI = FileProvider.getUriForFile(this,
-                        "com.lys.android.fileprovider",
+                        "com.example.android.fileProvider",
                         photoFile);
                 takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
-                startActivityForResult(takePictureIntent, CAMERA_REQUEST_CODE);
+                startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
             }
         }
     }

@@ -8,28 +8,31 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
 public class PaletteActivity extends AppCompatActivity {
 
     private TextView txt1, txt2, txt3, txt4, txt5, txt6;
-
-
+    Intent intent;
+    String paletteId ;
+    private String TAG = "Palette Activity";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_palette);
 
         init();
-
+        intent = getIntent();
+        paletteId = intent.getStringExtra("paletteId");
+        Log.d(TAG, paletteId);
         Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.sworm);
 
-        crearPalette(bitmap);
-
+        createPalette(bitmap);
     }
 
-    private void crearPalette(Bitmap bitmap) {
+    private void createPalette(Bitmap bitmap) {
 
         Palette.from(bitmap).generate(new Palette.PaletteAsyncListener() {
             @Override
