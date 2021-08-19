@@ -140,6 +140,34 @@ public class MainActivity extends AppCompatActivity {
 
         }
 
+        if (item.getItemId() == R.id.delete_account_menu){
+            reset_alert.setTitle("Delete Account Permanently ?")
+                    .setMessage("Are You Sure?")
+                    .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            FirebaseUser user = auth.getCurrentUser();
+                            user.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                                @Override
+                                public void onSuccess(Void unused) {
+                                    Toast.makeText(MainActivity.this, "Account Deleted", Toast.LENGTH_SHORT).show();
+                                    auth.signOut();
+                                    startActivity(new Intent(getApplicationContext(), Login.class));
+                                    finish();
+                                }
+                            }).addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    Toast.makeText(MainActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+
+                                }
+                            });
+
+                        }
+                    }).setNegativeButton("Cancel", null)
+                    .create().show();
+        }
+
 
         return super.onOptionsItemSelected(item);
 
