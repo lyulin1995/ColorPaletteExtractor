@@ -45,7 +45,7 @@ import java.util.Objects;
 public class MainActivity extends AppCompatActivity {
     private String TAG = "Main Activity";
     TextView verifyMsg;
-    Button verifyEmailBtn;
+    Button verifyEmailBtn, savedPaletteBtn;
     AlertDialog.Builder reset_alert;
     LayoutInflater inflater;
     FirebaseAuth auth;
@@ -75,6 +75,7 @@ public class MainActivity extends AppCompatActivity {
         Button logout = findViewById(R.id.logoutBtn);
         verifyMsg = findViewById(R.id.verifyEmailMsg);
         verifyEmailBtn = findViewById(R.id.verifyEmailBtn);
+        savedPaletteBtn = findViewById(R.id.savedPaletteBtn);
 
         reset_alert = new AlertDialog.Builder(this);
         inflater = this.getLayoutInflater();
@@ -93,6 +94,13 @@ public class MainActivity extends AppCompatActivity {
             verifyEmailBtn.setVisibility(View.VISIBLE);
             verifyMsg.setVisibility(View.VISIBLE);
         }
+
+        savedPaletteBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(getApplicationContext(), SavePaletteActivity.class));
+            }
+        });
 
         verifyEmailBtn.setOnClickListener(new View.OnClickListener() {
             @Override
