@@ -18,7 +18,9 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class Register extends AppCompatActivity {
@@ -91,7 +93,7 @@ public class Register extends AppCompatActivity {
                 user.put("fullname", fullName);
                 user.put("email", email);
                 user.put("password", password);
-                user.put("uploads", new String [0]);
+                user.put("savedPalette", new ArrayList<>());
 
                 // Add a new document with a generated ID
                 db.collection("user")

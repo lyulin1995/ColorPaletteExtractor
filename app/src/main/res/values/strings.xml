@@ -8,5 +8,6 @@
     <string name="title_savedPalette">Saved Palette</string>
     <string name="title_upload">Upload</string>
     <string name="btn_label_upload">Upload</string>
+    <string name="btn_label_generate">Generate Palette</string>
     <string name="title_main">Welcome</string>
 </resources>

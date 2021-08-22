@@ -22,6 +22,7 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -53,18 +54,24 @@ public class UploadActivity extends AppCompatActivity {
     String currentPhotoPath;
     ImageView preview;
     String fullPath;
+
     FirebaseFirestore db = FirebaseFirestore.getInstance();
-    private DocumentReference userRef;
+    DocumentReference userRef;
     StorageReference storageReference;
     private String imageName = "";
 
     private String uid;
     Map<String, Object> path = new HashMap<>();
 
+    Button generateBtn;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_upload);
+
+        generateBtn = findViewById(R.id.generateBtn);
+
         FirebaseUser loggedInUser = FirebaseAuth.getInstance().getCurrentUser();
         for (UserInfo profile : loggedInUser.getProviderData()){
             uid = profile.getUid();
@@ -167,56 +174,17 @@ public class UploadActivity extends AppCompatActivity {
             }
         }
 
+        generateBtn.setEnabled(true);
     }
 
     //uploads the file to firestore and adds the path as well as submission details to the firebase
     //record
     public void onClickSubmit(View v){
-        preview.setDrawingCacheEnabled(true);
-        preview.buildDrawingCache();
-        Bitmap images = ((BitmapDrawable) preview.getDrawable()).getBitmap();
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        images.compress(Bitmap.CompressFormat.JPEG, 80, baos);
-        byte[] data = baos.toByteArray();
-
-        StorageReference ref = storageReference.child("pictures/");
+        Toast.makeText(UploadActivity.this, "A photo was uploaded", Toast.LENGTH_SHORT).show();
+        Intent paletteActivity = new Intent(UploadActivity.this, PaletteActivity.class);
         fullPath = uid + "/" + imageName + ".jpg";
-        path.put("path", fullPath);
-
-        StorageReference place = ref.child(fullPath);
-        UploadTask uploadTask = place.putBytes(data);
-        uploadTask.addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception exception) {
-                // Handle unsuccessful uploads
-                int errorCode = ((StorageException) exception).getErrorCode();
-                String errorMessage = exception.getMessage();
-                Log.w(TAG, errorMessage);
-            }
-        }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-            @Override
-            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                db.collection("path")
-                        .add(path)
-                        .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-                            @Override
-                            public void onSuccess(DocumentReference documentReference) {
-                                //update the values in firebase
-                                userRef.update("uploads", FieldValue.arrayUnion(fullPath));
-                                Toast.makeText(UploadActivity.this, "A photo was uploaded", Toast.LENGTH_SHORT).show();
-                                Intent paletteActivity = new Intent(UploadActivity.this, PaletteActivity.class);
-                                Log.d(TAG, fullPath);
-                                paletteActivity.putExtra("imagePath", fullPath);
-                                startActivity(paletteActivity);
-                            }
-                        })
-                        .addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
-                                Log.w(TAG, "Failed to upload :( ", e);
-                            }
-                        });
-            }
-        });
+        Log.d(TAG, fullPath);
+        paletteActivity.putExtra("imagePath", fullPath);
+        startActivity(paletteActivity);
     }
 }

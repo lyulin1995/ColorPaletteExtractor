@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -17,10 +18,18 @@ import android.widget.TextView;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.UserInfo;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FieldValue;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageException;
 import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
+import java.io.ByteArrayOutputStream;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -37,6 +46,10 @@ public class PaletteActivity extends AppCompatActivity {
     StorageReference storageReference;
     Map<String, String> paletteObj = new HashMap<>();
 
+    FirebaseFirestore db = FirebaseFirestore.getInstance();
+    DocumentReference userRef;
+    private String uid;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,8 +59,14 @@ public class PaletteActivity extends AppCompatActivity {
         intent = getIntent();
         paletteId = intent.getStringExtra("paletteId");
         imagePath = intent.getStringExtra("imagePath");
-        storageReference = FirebaseStorage.getInstance().getReference();
 
+        FirebaseUser loggedInUser = FirebaseAuth.getInstance().getCurrentUser();
+        for (UserInfo profile : loggedInUser.getProviderData()){
+            uid = profile.getUid();
+        }
+        userRef = db.collection("user").document(uid);
+
+        storageReference = FirebaseStorage.getInstance().getReference();
         StorageReference ref = storageReference.child("pictures/" + imagePath);
         final long ONE_MEGABYTE = 1024 * 1024 * 5;
         ref.getBytes(ONE_MEGABYTE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
@@ -129,7 +148,30 @@ public class PaletteActivity extends AppCompatActivity {
 
     /** Called when the user taps the Save button */
     public void onClickSave(View view) {
-        Intent intent = new Intent(this, SavePaletteActivity.class);
-        startActivity(intent);
+        paletteImageView.setDrawingCacheEnabled(true);
+        paletteImageView.buildDrawingCache();
+        Bitmap images = ((BitmapDrawable) paletteImageView.getDrawable()).getBitmap();
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        images.compress(Bitmap.CompressFormat.JPEG, 80, baos);
+        byte[] data = baos.toByteArray();
+
+        StorageReference ref = storageReference.child("pictures/");
+
+        StorageReference place = ref.child(imagePath);
+        UploadTask uploadTask = place.putBytes(data);
+        uploadTask.addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception exception) {
+                // Handle unsuccessful uploads
+                int errorCode = ((StorageException) exception).getErrorCode();
+                String errorMessage = exception.getMessage();
+                Log.w(TAG, errorMessage);
+            }
+        }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                userRef.update("uploads", FieldValue.arrayUnion(imagePath));
+            }
+        });
     }
 }
