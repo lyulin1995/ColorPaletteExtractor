@@ -58,7 +58,7 @@
         android:layout_marginTop="200dp"
         android:layout_marginBottom="100dp"
         android:enabled="false"
-        android:onClick="onClickSubmit"
+        android:onClick="onClickGenerate"
         android:text="@string/btn_label_generate"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

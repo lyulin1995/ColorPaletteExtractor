@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:gravity="top"
     android:orientation="vertical"
-    tools:context=".MainActivity">
+    tools:context=".PaletteActivity">
 
 
     <ImageView
@@ -60,9 +60,10 @@
         android:textStyle="bold" />
 
     <Button
-        android:id="@+id/uploadBtn"
+        android:id="@+id/saveBtn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:onClick="onClickSave"
         android:text="@string/btn_label_upload" />
 
 </LinearLayout>
