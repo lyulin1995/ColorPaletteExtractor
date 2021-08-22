@@ -11,8 +11,11 @@ import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -37,11 +40,13 @@ import java.util.Map;
 public class PaletteActivity extends AppCompatActivity {
 
     private TextView txt1, txt2, txt3, txt4;
+    EditText ptxt1;
     Intent intent;
     String paletteId ;
     String imagePath;
     Bitmap imageBitmap;
     ImageView paletteImageView;
+    String paletteTitle;
     private String TAG = "Palette Activity";
     StorageReference storageReference;
     Map<String, String> paletteObj = new HashMap<>();
@@ -86,6 +91,25 @@ public class PaletteActivity extends AppCompatActivity {
                 // Handle any errors
             }
         });
+
+        ptxt1.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                Log.d("edittext", s.toString());
+                paletteTitle = s.toString();
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+
     }
 
     private void createPalette(Bitmap bitmap) {
@@ -137,7 +161,8 @@ public class PaletteActivity extends AppCompatActivity {
         this.txt3 = findViewById(R.id.txt3);
         this.txt4 = findViewById(R.id.txt4);
         paletteImageView = findViewById(R.id.paletteImageView);
-
+        ptxt1 = findViewById(R.id.ptxt1);
+        paletteTitle = ptxt1.getText().toString();
     }
 
     /** Called when the user taps the Edit button */
