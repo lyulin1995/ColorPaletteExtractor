@@ -43,8 +43,10 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class UploadActivity extends AppCompatActivity {
@@ -54,11 +56,12 @@ public class UploadActivity extends AppCompatActivity {
     String currentPhotoPath;
     ImageView preview;
     String fullPath;
-
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     DocumentReference userRef;
     StorageReference storageReference;
     private String imageName = "";
+
+    PaletteObj paletteObj;
 
     private String uid;
     Map<String, Object> path = new HashMap<>();
@@ -179,12 +182,50 @@ public class UploadActivity extends AppCompatActivity {
 
     //uploads the file to firestore and adds the path as well as submission details to the firebase
     //record
-    public void onClickSubmit(View v){
-        Toast.makeText(UploadActivity.this, "A photo was uploaded", Toast.LENGTH_SHORT).show();
-        Intent paletteActivity = new Intent(UploadActivity.this, PaletteActivity.class);
+    public void onClickGenerate(View v) {
+        preview.setDrawingCacheEnabled(true);
+        preview.buildDrawingCache();
+        Bitmap images = ((BitmapDrawable) preview.getDrawable()).getBitmap();
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        images.compress(Bitmap.CompressFormat.JPEG, 80, baos);
+        byte[] data = baos.toByteArray();
+
+        StorageReference ref = storageReference.child("pictures/");
         fullPath = uid + "/" + imageName + ".jpg";
-        Log.d(TAG, fullPath);
-        paletteActivity.putExtra("imagePath", fullPath);
-        startActivity(paletteActivity);
+        path.put("path", fullPath);
+
+        StorageReference place = ref.child(fullPath);
+        UploadTask uploadTask = place.putBytes(data);
+        uploadTask.addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception exception) {
+                // Handle unsuccessful uploads
+                int errorCode = ((StorageException) exception).getErrorCode();
+                String errorMessage = exception.getMessage();
+                Log.w(TAG, errorMessage);
+            }
+        }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                db.collection("path")
+                        .add(path)
+                        .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                            @Override
+                            public void onSuccess(DocumentReference documentReference) {
+                                Toast.makeText(UploadActivity.this, "A photo was uploaded", Toast.LENGTH_SHORT).show();
+                                Intent paletteActivity = new Intent(UploadActivity.this, PaletteActivity.class);
+                                Log.d(TAG, fullPath);
+                                paletteActivity.putExtra("imagePath", fullPath);
+                                startActivity(paletteActivity);
+                            }
+                        })
+                        .addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Log.w(TAG, "Failed to upload :( ", e);
+                            }
+                        });
+            }
+        });
     }
 }

@@ -49,7 +49,7 @@ public class PaletteActivity extends AppCompatActivity {
     String paletteTitle;
     private String TAG = "Palette Activity";
     StorageReference storageReference;
-    Map<String, String> paletteObj = new HashMap<>();
+    PaletteObj paletteObj;
 
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     DocumentReference userRef;
@@ -73,6 +73,7 @@ public class PaletteActivity extends AppCompatActivity {
 
         storageReference = FirebaseStorage.getInstance().getReference();
         StorageReference ref = storageReference.child("pictures/" + imagePath);
+        Log.d(TAG, "pictures/" + imagePath);
         final long ONE_MEGABYTE = 1024 * 1024 * 5;
         ref.getBytes(ONE_MEGABYTE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
             @Override
@@ -116,13 +117,15 @@ public class PaletteActivity extends AppCompatActivity {
         Palette.from(bitmap).generate(new Palette.PaletteAsyncListener() {
             @Override
             public void onGenerated(@Nullable Palette palette) {
+                //Add a new palette object into firebase
+                paletteObj = new PaletteObj("", imagePath);
                 Palette.Swatch vibrant = palette.getVibrantSwatch();
                 if(vibrant!=null){
                     txt1.setBackgroundColor(vibrant.getRgb());
                     txt1.setTextColor(vibrant.getTitleTextColor());
                     txt1.setText("Vibrant");
                     String hex =  Integer.toHexString(vibrant.getRgb());
-                    paletteObj.put("vibrantColor", hex);
+                    paletteObj.setVibrantColor(hex);
                 }
 
                 Palette.Swatch lightVibrant = palette.getLightVibrantSwatch();
@@ -131,7 +134,7 @@ public class PaletteActivity extends AppCompatActivity {
                     txt2.setTextColor(lightVibrant.getTitleTextColor());
                     txt2.setText("Light Vibrant");
                     String hex =  Integer.toHexString(lightVibrant.getRgb());
-                    paletteObj.put("lightVibrantColor", hex);
+                    paletteObj.setLightVibrantColor(hex);
                 }
 
                 Palette.Swatch dominant = palette.getDominantSwatch();
@@ -140,7 +143,7 @@ public class PaletteActivity extends AppCompatActivity {
                     txt3.setTextColor(dominant.getTitleTextColor());
                     txt3.setText("Dominant");
                     String hex =  Integer.toHexString(dominant.getRgb());
-                    paletteObj.put("dominantColor", hex);
+                    paletteObj.setDominantColor(hex);
                 }
 
                 Palette.Swatch darkMuted = palette.getDarkMutedSwatch();
@@ -149,10 +152,11 @@ public class PaletteActivity extends AppCompatActivity {
                     txt4.setTextColor(darkMuted.getTitleTextColor());
                     txt4.setText("Dark Muted");
                     String hex =  Integer.toHexString(darkMuted.getRgb());
-                    paletteObj.put("darkMutedColor", hex);
+                    paletteObj.setDarkMutedColor(hex);
                 }
             }
         });
+        userRef.update("savedPalette", FieldValue.arrayUnion(paletteObj));
     }
 
     private void init() {
@@ -195,7 +199,7 @@ public class PaletteActivity extends AppCompatActivity {
         }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                userRef.update("uploads", FieldValue.arrayUnion(imagePath));
+                userRef.update("savedPalette", FieldValue.arrayUnion(paletteObj));
             }
         });
     }
