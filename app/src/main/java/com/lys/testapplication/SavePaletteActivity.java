@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.graphics.Bitmap;
 import android.os.Bundle;
 
 import java.util.ArrayList;
@@ -12,7 +13,7 @@ public class SavePaletteActivity extends AppCompatActivity {
     RecyclerView recyclerView;
     Adapter adapter;
     ArrayList<String> items;
-
+    Bitmap imageBitmap;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

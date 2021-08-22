@@ -8,6 +8,7 @@ import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -46,11 +47,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class UploadActivity extends AppCompatActivity {
-    private static final int RESULT_LOAD_IMAGE =1;
-    private boolean submitByCamera = false;
-    static final int REQUEST_IMAGE_CAPTURE = 1;
+    public static final int CAMERA_REQUEST_CODE = 1;
+    public static final int GALLERY_REQUEST_CODE = 2;
     private String TAG = "UploadActivity";
-    FirebaseStorage storage = FirebaseStorage.getInstance();
     String currentPhotoPath;
     ImageView preview;
     String fullPath;
@@ -60,7 +59,6 @@ public class UploadActivity extends AppCompatActivity {
     private String imageName = "";
 
     private String uid;
-    private String requestID;
     Map<String, Object> path = new HashMap<>();
 
     @Override
@@ -72,11 +70,9 @@ public class UploadActivity extends AppCompatActivity {
             uid = profile.getUid();
         }
         preview = findViewById(R.id.uploadImageView);
-        requestID = getIntent().getStringExtra("RequestID");
         userRef = db.collection("user").document(uid);
         // initialize the storage difference
         storageReference = FirebaseStorage.getInstance().getReference();
-
     }
 
     //allows a user to upload a photo directly taken from their camera
@@ -95,7 +91,6 @@ public class UploadActivity extends AppCompatActivity {
         // i.e. we want to submit by camera, we create a new intent for this.
         if (ContextCompat.checkSelfPermission(UploadActivity.this, Manifest.permission.CAMERA) ==
                 PackageManager.PERMISSION_GRANTED) {
-            submitByCamera = true;
 
             Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
             // Ensure that there's a camera activity to handle the intent
@@ -113,16 +108,24 @@ public class UploadActivity extends AppCompatActivity {
                     Uri photoURI = FileProvider.getUriForFile(this,
                             "com.lys.android.fileProvider",
                             photoFile);
-                    Log.d(TAG, photoURI.toString());
                     takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
-                    startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
+                    startActivityForResult(takePictureIntent, CAMERA_REQUEST_CODE);
                 }
             }
         }
     }
 
     public void onClickGallery (View v) {
-
+        File photoFile = null;
+        try {
+            photoFile = createImageFile();
+        } catch (IOException ex) {
+            // Error occurred while creating the File
+        }
+        if (photoFile != null) {
+            Intent gallery = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+            startActivityForResult(gallery, GALLERY_REQUEST_CODE);
+        }
     }
 
     //auxiliary method for cameraSubmit to create the path of a new image file
@@ -148,17 +151,17 @@ public class UploadActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         // If the request was successful
-        if (requestCode == RESULT_LOAD_IMAGE && resultCode == RESULT_OK){
+        if (requestCode == CAMERA_REQUEST_CODE && resultCode == RESULT_OK) {
             // If the image was taken by camera, we need to do some extra work
-            if (submitByCamera){
-                BitmapFactory.Options bitMapOption=new BitmapFactory.Options();
-                bitMapOption.inJustDecodeBounds=true;
+                BitmapFactory.Options bitMapOption = new BitmapFactory.Options();
+                bitMapOption.inJustDecodeBounds = true;
                 BitmapFactory.decodeFile(currentPhotoPath, bitMapOption);
-                int imageWidth=bitMapOption.outWidth;
-                int imageHeight=bitMapOption.outHeight;
+                int imageWidth = bitMapOption.outWidth;
+                int imageHeight = bitMapOption.outHeight;
                 Bitmap thumbImage = ThumbnailUtils.extractThumbnail(BitmapFactory.decodeFile(currentPhotoPath), imageWidth, imageHeight);
                 preview.setImageBitmap(thumbImage);
-            }else if (data != null){
+        } else if (requestCode == GALLERY_REQUEST_CODE && resultCode == RESULT_OK) {
+            if (data != null) {
                 Uri selectedImage = data.getData();
                 preview.setImageURI(selectedImage);
             }
@@ -173,7 +176,7 @@ public class UploadActivity extends AppCompatActivity {
         preview.buildDrawingCache();
         Bitmap images = ((BitmapDrawable) preview.getDrawable()).getBitmap();
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        images.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+        images.compress(Bitmap.CompressFormat.JPEG, 80, baos);
         byte[] data = baos.toByteArray();
 
         StorageReference ref = storageReference.child("pictures/");
@@ -200,9 +203,11 @@ public class UploadActivity extends AppCompatActivity {
                             public void onSuccess(DocumentReference documentReference) {
                                 //update the values in firebase
                                 userRef.update("uploads", FieldValue.arrayUnion(fullPath));
-
                                 Toast.makeText(UploadActivity.this, "A photo was uploaded", Toast.LENGTH_SHORT).show();
-                                startActivity(new Intent(UploadActivity.this, MainActivity.class));
+                                Intent paletteActivity = new Intent(UploadActivity.this, PaletteActivity.class);
+                                Log.d(TAG, fullPath);
+                                paletteActivity.putExtra("imagePath", fullPath);
+                                startActivity(paletteActivity);
                             }
                         })
                         .addOnFailureListener(new OnFailureListener() {

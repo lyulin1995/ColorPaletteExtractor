@@ -73,15 +73,11 @@ public class MainActivity extends AppCompatActivity {
         auth = FirebaseAuth.getInstance();
 
         Button logout = findViewById(R.id.logoutBtn);
-        verifyMsg = findViewById(R.id.verifyEmailMsg);
         verifyEmailBtn = findViewById(R.id.verifyEmailBtn);
         savedPaletteBtn = findViewById(R.id.savedPaletteBtn);
 
         reset_alert = new AlertDialog.Builder(this);
         inflater = this.getLayoutInflater();
-
-        preview = findViewById(R.id.palettePreview);
-        preview.buildDrawingCache();
 
         // Get the userID from the current user
         FirebaseUser loggedInUser = FirebaseAuth.getInstance().getCurrentUser();
@@ -90,15 +86,31 @@ public class MainActivity extends AppCompatActivity {
         }
         userRef = db.collection("user").document(uID);
 
-        if (!auth.getCurrentUser().isEmailVerified()){
-            verifyEmailBtn.setVisibility(View.VISIBLE);
-            verifyMsg.setVisibility(View.VISIBLE);
-        }
+
+        // Get user info to change welcome message, about request message and query.
+        userRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()){
+                    DocumentSnapshot document = task.getResult();
+                    // Set user as user document in Firebase
+                    user = document.getData();
+                    // Get important information
+                    if (user != null) {
+                        listUploads = (List<String>) user.get("uploads");
+                    }
+                }
+                else {
+                    Log.d(TAG, "get failed with: ", task.getException());
+                }
+            }
+        });
 
         savedPaletteBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(getApplicationContext(), SavePaletteActivity.class));
+                Intent intent = new Intent(getApplicationContext(), SavePaletteActivity.class);
+                startActivity(intent);
             }
         });
 
@@ -126,44 +138,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-
-        // Get user info to change welcome message, about request message and query.
-        userRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if (task.isSuccessful()){
-                    DocumentSnapshot document = task.getResult();
-                    // Set user as user document in Firebase
-                    user = document.getData();
-                    // Get important information
-                    if (user != null) {
-                        listUploads = (List<String>) user.get("uploads");
-                        path = listUploads.get(0);
-                        String fullPath = "pictures/" + uID  + path;
-                        picRef = storageRef.child(fullPath);
-                        final long ONE_MEGABYTE = 1024 * 1024;
-                        picRef.getBytes(ONE_MEGABYTE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
-                            @Override
-                            public void onSuccess(byte[] bytes) {
-                                Bitmap picture = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-                                preview.setImageBitmap(picture);
-//                                preview.setId(0);
-                            }
-                        }).addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception exception) {
-                            }
-                        });
-                        Log.d(TAG, listUploads.toString());
-                    }
-                }
-                else {
-                    Log.d(TAG, "get failed with: ", task.getException());
-                }
-            }
-        });
     }
-
     /** Called when the user taps the Camera button */
     public void onClickUpload(View view) {
         Intent intent = new Intent(this, UploadActivity.class);

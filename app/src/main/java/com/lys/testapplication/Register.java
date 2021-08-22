@@ -60,7 +60,6 @@ public class Register extends AppCompatActivity {
                 String email = registerEmail.getText().toString();
                 String password = registerPassword.getText().toString();
                 String confPass = registerConfPass.getText().toString();
-
                 if (fullName.isEmpty()){
                     registerFullName.setError("Full Name is Required");
                     return;
@@ -92,6 +91,7 @@ public class Register extends AppCompatActivity {
                 user.put("fullname", fullName);
                 user.put("email", email);
                 user.put("password", password);
+                user.put("uploads", new String [0]);
 
                 // Add a new document with a generated ID
                 db.collection("user")
@@ -126,10 +126,6 @@ public class Register extends AppCompatActivity {
                         Toast.makeText(Register.this, e.getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 });
-
-
-
-
 
             }
         });
