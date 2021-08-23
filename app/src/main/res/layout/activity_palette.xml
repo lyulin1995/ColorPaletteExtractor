@@ -6,7 +6,8 @@
     android:layout_height="match_parent"
     android:gravity="top"
     android:orientation="vertical"
-    tools:context=".PaletteActivity">
+    tools:context=".PaletteActivity"
+    android:background="@color/Surface">
 
     <EditText
         android:id="@+id/ptxt1"
@@ -73,6 +74,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:onClick="onClickSave"
+        android:textColor="@color/textColorPrimary"
+        android:textAllCaps="false"
+        android:textSize="16sp"
         android:text="@string/btn_label_upload" />
 
 

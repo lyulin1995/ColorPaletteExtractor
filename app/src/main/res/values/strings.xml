@@ -11,4 +11,6 @@
     <string name="btn_label_generate">Generate Palette</string>
     <string name="title_main">Welcome</string>
     <string name="btn_label_newPalette">Create Palette</string>
+
+
 </resources>
