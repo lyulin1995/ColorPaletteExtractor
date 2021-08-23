@@ -72,7 +72,6 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         auth = FirebaseAuth.getInstance();
 
-        Button logout = findViewById(R.id.logoutBtn);
         verifyEmailBtn = findViewById(R.id.verifyEmailBtn);
         savedPaletteBtn = findViewById(R.id.savedPaletteBtn);
 
@@ -129,14 +128,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        logout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                FirebaseAuth.getInstance().signOut();
-                startActivity(new Intent(getApplicationContext(), Login.class));
-                finish();
-            }
-        });
 
     }
     /** Called when the user taps the Camera button */
@@ -227,6 +218,12 @@ public class MainActivity extends AppCompatActivity {
                         }
                     }).setNegativeButton("Cancel", null)
                     .create().show();
+        }
+
+        if (item.getItemId() == R.id.logout_menu){
+            FirebaseAuth.getInstance().signOut();
+            startActivity(new Intent(getApplicationContext(), Login.class));
+            finish();
         }
 
 

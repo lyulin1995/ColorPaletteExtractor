@@ -117,11 +117,11 @@ public class PaletteActivity extends AppCompatActivity {
                 //Add a new palette object into firebase
                 paletteObj = new PaletteObj("", imagePath);
 
-                Palette.Swatch vibrant = palette.getVibrantSwatch();
+                Palette.Swatch vibrant = palette.getDarkVibrantSwatch();
                 if(vibrant!=null){
                     txt1.setBackgroundColor(vibrant.getRgb());
                     txt1.setTextColor(vibrant.getTitleTextColor());
-                    txt1.setText("Vibrant");
+                    txt1.setText("Dartk Vibrant");
                     String hex =  Integer.toHexString(vibrant.getRgb());
                     paletteObj.setVibrantColor(hex);
                 }
@@ -135,11 +135,11 @@ public class PaletteActivity extends AppCompatActivity {
                     paletteObj.setLightVibrantColor(hex);
                 }
 
-                Palette.Swatch dominant = palette.getDominantSwatch();
+                Palette.Swatch dominant = palette.getLightMutedSwatch();
                 if(dominant!=null){
                     txt3.setBackgroundColor(dominant.getRgb());
                     txt3.setTextColor(dominant.getTitleTextColor());
-                    txt3.setText("Dominant");
+                    txt3.setText("Light Muted");
                     String hex =  Integer.toHexString(dominant.getRgb());
                     paletteObj.setDominantColor(hex);
                 }
