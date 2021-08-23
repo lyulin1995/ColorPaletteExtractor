@@ -61,8 +61,6 @@ public class UploadActivity extends AppCompatActivity {
     StorageReference storageReference;
     private String imageName = "";
 
-    PaletteObj paletteObj;
-
     private String uid;
     Map<String, Object> path = new HashMap<>();
 
@@ -207,24 +205,11 @@ public class UploadActivity extends AppCompatActivity {
         }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                db.collection("path")
-                        .add(path)
-                        .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-                            @Override
-                            public void onSuccess(DocumentReference documentReference) {
-                                Toast.makeText(UploadActivity.this, "A photo was uploaded", Toast.LENGTH_SHORT).show();
-                                Intent paletteActivity = new Intent(UploadActivity.this, PaletteActivity.class);
-                                Log.d(TAG, fullPath);
-                                paletteActivity.putExtra("imagePath", fullPath);
-                                startActivity(paletteActivity);
-                            }
-                        })
-                        .addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
-                                Log.w(TAG, "Failed to upload :( ", e);
-                            }
-                        });
+                Toast.makeText(UploadActivity.this, "A photo was uploaded", Toast.LENGTH_SHORT).show();
+                Intent paletteActivity = new Intent(UploadActivity.this, PaletteActivity.class);
+                Log.d(TAG, fullPath);
+                paletteActivity.putExtra("imagePath", fullPath);
+                startActivity(paletteActivity);
             }
         });
     }

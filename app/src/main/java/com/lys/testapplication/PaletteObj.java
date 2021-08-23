@@ -42,4 +42,8 @@ public class PaletteObj {
     public void setDarkMutedColor(String darkMuted) {
         paletteDetail.put("darkMuted", darkMuted);
     }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
 }

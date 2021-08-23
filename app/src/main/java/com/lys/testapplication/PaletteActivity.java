@@ -40,7 +40,7 @@ import java.util.Map;
 public class PaletteActivity extends AppCompatActivity {
 
     private TextView txt1, txt2, txt3, txt4;
-    EditText ptxt1;
+    EditText titleEditText;
     Intent intent;
     String paletteId ;
     String imagePath;
@@ -93,21 +93,18 @@ public class PaletteActivity extends AppCompatActivity {
             }
         });
 
-        ptxt1.addTextChangedListener(new TextWatcher() {
+        titleEditText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
             }
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                Log.d("edittext", s.toString());
                 paletteTitle = s.toString();
             }
 
             @Override
             public void afterTextChanged(Editable s) {
-
             }
         });
 
@@ -119,6 +116,7 @@ public class PaletteActivity extends AppCompatActivity {
             public void onGenerated(@Nullable Palette palette) {
                 //Add a new palette object into firebase
                 paletteObj = new PaletteObj("", imagePath);
+
                 Palette.Swatch vibrant = palette.getVibrantSwatch();
                 if(vibrant!=null){
                     txt1.setBackgroundColor(vibrant.getRgb());
@@ -156,7 +154,6 @@ public class PaletteActivity extends AppCompatActivity {
                 }
             }
         });
-        userRef.update("savedPalette", FieldValue.arrayUnion(paletteObj));
     }
 
     private void init() {
@@ -165,8 +162,8 @@ public class PaletteActivity extends AppCompatActivity {
         this.txt3 = findViewById(R.id.txt3);
         this.txt4 = findViewById(R.id.txt4);
         paletteImageView = findViewById(R.id.paletteImageView);
-        ptxt1 = findViewById(R.id.ptxt1);
-        paletteTitle = ptxt1.getText().toString();
+        titleEditText = findViewById(R.id.ptxt1);
+        paletteTitle = titleEditText.getText().toString();
     }
 
     /** Called when the user taps the Edit button */
@@ -183,6 +180,8 @@ public class PaletteActivity extends AppCompatActivity {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         images.compress(Bitmap.CompressFormat.JPEG, 80, baos);
         byte[] data = baos.toByteArray();
+
+        paletteObj.setTitle(paletteTitle);
 
         StorageReference ref = storageReference.child("pictures/");
 
