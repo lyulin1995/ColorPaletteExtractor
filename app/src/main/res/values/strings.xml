@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">TestApplication</string>
+    <string name="app_name">Color Palette Extractor</string>
     <string name="btn_label_camera">Camera</string>
     <string name="btn_label_back">Back</string>
     <string name="btn_label_gallery">Gallery</string>
@@ -11,6 +11,6 @@
     <string name="btn_label_generate">Generate Palette</string>
     <string name="title_main">Welcome</string>
     <string name="btn_label_newPalette">Create Palette</string>
-
+    <string name="btn_label_copy">Copy</string>
 
 </resources>

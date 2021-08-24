@@ -16,10 +16,10 @@ public class PaletteObj {
         this.title = title;
         this.imagePath = imagePath;
         Map<String, Object> paletteDetail = new HashMap<>();
-        paletteDetail.put("vibrantColor", "");
-        paletteDetail.put("lightVibrant", "");
-        paletteDetail.put("dominantColor", "");
-        paletteDetail.put("darkMuted", "");
+        paletteDetail.put("color_1", "");
+        paletteDetail.put("color_2", "");
+        paletteDetail.put("color_3", "");
+        paletteDetail.put("color_4", "");
         this.paletteDetail = paletteDetail;
     }
 
@@ -27,23 +27,27 @@ public class PaletteObj {
         this.paletteDetail = paletteDetail;
     }
 
-    public void setVibrantColor(String vibrantColor) {
-        paletteDetail.put("vibrantColor", vibrantColor);
+    public void setColorOne(String vibrantColor) {
+        paletteDetail.put("color_1", vibrantColor);
     }
 
-    public void setLightVibrantColor(String lightVibrant) {
-        paletteDetail.put("lightVibrant", lightVibrant);
+    public void setColorTwo(String lightVibrant) {
+        paletteDetail.put("color_2", lightVibrant);
     }
 
-    public void setDominantColor(String dominantColor) {
-        paletteDetail.put("dominantColor", dominantColor);
+    public void setColorThree(String dominantColor) {
+        paletteDetail.put("color_3", dominantColor);
     }
 
-    public void setDarkMutedColor(String darkMuted) {
-        paletteDetail.put("darkMuted", darkMuted);
+    public void setColorFour(String darkMuted) {
+        paletteDetail.put("color_4", darkMuted);
     }
 
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    public String getTitle() {
+        return this.title;
     }
 }

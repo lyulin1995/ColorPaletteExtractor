@@ -31,6 +31,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserInfo;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -88,12 +89,13 @@ public class UploadActivity extends AppCompatActivity {
     public void onClickCamera(View v){
         // Check if the permissions are granted.
         // If one is not granted, request it
-        if (ContextCompat.checkSelfPermission(
+        if ((ContextCompat.checkSelfPermission(
                 UploadActivity.this, Manifest.permission.CAMERA ) !=
-                PackageManager.PERMISSION_GRANTED) {
+                PackageManager.PERMISSION_GRANTED)) {
+            Log.e(TAG, "Not granted");
             requestPermissions(
                     new String[] { Manifest.permission.CAMERA},
-                    1);
+                    CAMERA_REQUEST_CODE);
         }
         // If the permissions are granted and submitByCamera is true,
         // i.e. we want to submit by camera, we create a new intent for this.
@@ -102,8 +104,10 @@ public class UploadActivity extends AppCompatActivity {
 
             Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
             // Ensure that there's a camera activity to handle the intent
-            if (getApplicationContext().getPackageManager().hasSystemFeature(
-                    PackageManager.FEATURE_CAMERA)) {
+            if ((getApplicationContext().getPackageManager().hasSystemFeature(
+                    PackageManager.FEATURE_CAMERA)) && (ContextCompat.checkSelfPermission(
+                    UploadActivity.this, Manifest.permission.CAMERA ) ==
+                    PackageManager.PERMISSION_GRANTED )) {
                 // Create the File where the photo should go
                 File photoFile = null;
                 try {
@@ -124,17 +128,29 @@ public class UploadActivity extends AppCompatActivity {
     }
 
     public void onClickGallery (View v) {
-        File photoFile = null;
-        try {
-            photoFile = createImageFile();
-        } catch (IOException ex) {
-            // Error occurred while creating the File
-        }
-        if (photoFile != null) {
-            Intent gallery = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-            startActivityForResult(gallery, GALLERY_REQUEST_CODE);
+        if ((ContextCompat.checkSelfPermission(
+                UploadActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE ) !=
+                PackageManager.PERMISSION_GRANTED) && (ContextCompat.checkSelfPermission(
+                UploadActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE ) !=
+                PackageManager.PERMISSION_GRANTED)) {
+            Log.e(TAG, "Not granted");
+            requestPermissions(
+                    new String[] { Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                    GALLERY_REQUEST_CODE);
+        } else {
+            File photoFile = null;
+            try {
+                photoFile = createImageFile();
+            } catch (IOException ex) {
+                // Error occurred while creating the File
+            }
+            if (photoFile != null) {
+                Intent gallery = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                startActivityForResult(gallery, GALLERY_REQUEST_CODE);
+            }
         }
     }
+
 
     //auxiliary method for cameraSubmit to create the path of a new image file
     // The path is created based on the current date to avoid duplicate names in the database
@@ -168,14 +184,18 @@ public class UploadActivity extends AppCompatActivity {
                 int imageHeight = bitMapOption.outHeight;
                 Bitmap thumbImage = ThumbnailUtils.extractThumbnail(BitmapFactory.decodeFile(currentPhotoPath), imageWidth, imageHeight);
                 preview.setImageBitmap(thumbImage);
+                if (thumbImage != null) {
+                    generateBtn.setEnabled(true);
+                }
         } else if (requestCode == GALLERY_REQUEST_CODE && resultCode == RESULT_OK) {
             if (data != null) {
                 Uri selectedImage = data.getData();
                 preview.setImageURI(selectedImage);
+                generateBtn.setEnabled(true);
             }
         }
 
-        generateBtn.setEnabled(true);
+
     }
 
     //uploads the file to firestore and adds the path as well as submission details to the firebase

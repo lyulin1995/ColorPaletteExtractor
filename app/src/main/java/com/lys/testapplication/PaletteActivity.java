@@ -8,7 +8,6 @@ import androidx.palette.graphics.Palette;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.text.Editable;
@@ -24,6 +23,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserInfo;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -33,16 +33,12 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 import java.io.ByteArrayOutputStream;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 public class PaletteActivity extends AppCompatActivity {
 
     private TextView txt1, txt2, txt3, txt4;
     EditText titleEditText;
     Intent intent;
-    String paletteId ;
     String imagePath;
     Bitmap imageBitmap;
     ImageView paletteImageView;
@@ -53,6 +49,7 @@ public class PaletteActivity extends AppCompatActivity {
 
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     DocumentReference userRef;
+    CollectionReference paletteCollectionRef;
     private String uid;
 
     @Override
@@ -62,8 +59,8 @@ public class PaletteActivity extends AppCompatActivity {
 
         init();
         intent = getIntent();
-        paletteId = intent.getStringExtra("paletteId");
         imagePath = intent.getStringExtra("imagePath");
+        paletteCollectionRef = db.collection("palette");
 
         FirebaseUser loggedInUser = FirebaseAuth.getInstance().getCurrentUser();
         for (UserInfo profile : loggedInUser.getProviderData()){
@@ -117,40 +114,40 @@ public class PaletteActivity extends AppCompatActivity {
                 //Add a new palette object into firebase
                 paletteObj = new PaletteObj("", imagePath);
 
-                Palette.Swatch vibrant = palette.getDarkVibrantSwatch();
-                if(vibrant!=null){
-                    txt1.setBackgroundColor(vibrant.getRgb());
-                    txt1.setTextColor(vibrant.getTitleTextColor());
-                    txt1.setText("Dartk Vibrant");
-                    String hex =  Integer.toHexString(vibrant.getRgb());
-                    paletteObj.setVibrantColor(hex);
+                Palette.Swatch color_1 = palette.getDarkVibrantSwatch();
+                if(color_1!=null){
+                    txt1.setBackgroundColor(color_1.getRgb());
+                    txt1.setTextColor(color_1.getTitleTextColor());
+                    txt1.setText("Color 1");
+                    String hex =  Integer.toHexString(color_1.getRgb());
+                    paletteObj.setColorOne(hex);
                 }
 
-                Palette.Swatch lightVibrant = palette.getLightVibrantSwatch();
-                if(lightVibrant!=null){
-                    txt2.setBackgroundColor(lightVibrant.getRgb());
-                    txt2.setTextColor(lightVibrant.getTitleTextColor());
-                    txt2.setText("Light Vibrant");
-                    String hex =  Integer.toHexString(lightVibrant.getRgb());
-                    paletteObj.setLightVibrantColor(hex);
+                Palette.Swatch color_2 = palette.getLightVibrantSwatch();
+                if(color_2!=null){
+                    txt2.setBackgroundColor(color_2.getRgb());
+                    txt2.setTextColor(color_2.getTitleTextColor());
+                    txt2.setText("Color 2");
+                    String hex =  Integer.toHexString(color_2.getRgb());
+                    paletteObj.setColorTwo(hex);
                 }
 
-                Palette.Swatch dominant = palette.getLightMutedSwatch();
-                if(dominant!=null){
-                    txt3.setBackgroundColor(dominant.getRgb());
-                    txt3.setTextColor(dominant.getTitleTextColor());
-                    txt3.setText("Light Muted");
-                    String hex =  Integer.toHexString(dominant.getRgb());
-                    paletteObj.setDominantColor(hex);
+                Palette.Swatch color_3 = palette.getLightMutedSwatch();
+                if(color_3!=null){
+                    txt3.setBackgroundColor(color_3.getRgb());
+                    txt3.setTextColor(color_3.getTitleTextColor());
+                    txt3.setText("Color 3");
+                    String hex =  Integer.toHexString(color_3.getRgb());
+                    paletteObj.setColorThree(hex);
                 }
 
-                Palette.Swatch darkMuted = palette.getDarkMutedSwatch();
-                if(darkMuted!=null){
-                    txt4.setBackgroundColor(darkMuted.getRgb());
-                    txt4.setTextColor(darkMuted.getTitleTextColor());
-                    txt4.setText("Dark Muted");
-                    String hex =  Integer.toHexString(darkMuted.getRgb());
-                    paletteObj.setDarkMutedColor(hex);
+                Palette.Swatch color_4 = palette.getDarkMutedSwatch();
+                if(color_4!=null){
+                    txt4.setBackgroundColor(color_4.getRgb());
+                    txt4.setTextColor(color_4.getTitleTextColor());
+                    txt4.setText("Color 4");
+                    String hex =  Integer.toHexString(color_4.getRgb());
+                    paletteObj.setColorFour(hex);
                 }
             }
         });
@@ -164,12 +161,6 @@ public class PaletteActivity extends AppCompatActivity {
         paletteImageView = findViewById(R.id.paletteImageView);
         titleEditText = findViewById(R.id.ptxt1);
         paletteTitle = titleEditText.getText().toString();
-    }
-
-    /** Called when the user taps the Edit button */
-    public void onClickEdit(View view) {
-        Intent intent = new Intent(this, EditPaletteActivity.class);
-        startActivity(intent);
     }
 
     /** Called when the user taps the Save button */
@@ -198,7 +189,9 @@ public class PaletteActivity extends AppCompatActivity {
         }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                userRef.update("savedPalette", FieldValue.arrayUnion(paletteObj));
+                userRef.update("savedPalette", FieldValue.arrayUnion( paletteObj));
+                Intent intent = new Intent(getApplicationContext(), SavedPaletteActivity.class);
+                startActivity(intent);
             }
         });
     }
