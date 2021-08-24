@@ -35,11 +35,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".EditPaletteActivity" />
         <activity android:name=".PaletteActivity" />
         <activity android:name=".GalleryActivity" />
         <activity android:name=".CameraActivity" />
-        <activity android:name=".MainActivity" />
 
         <provider
             android:name="androidx.core.content.FileProvider"

@@ -91,8 +91,11 @@ public class SavedPaletteActivity extends AppCompatActivity {
                 }
             }
         });
+        recyclerView = findViewById(R.id.recyclerView);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
+        adapter = new Adapter(getApplicationContext(), items);
+        recyclerView.setAdapter(adapter);
     }
-
 
 
     /** Called when the user taps the Camera button */
