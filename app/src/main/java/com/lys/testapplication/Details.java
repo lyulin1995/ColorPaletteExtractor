@@ -17,6 +17,7 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -156,24 +157,28 @@ public class Details extends AppCompatActivity {
                 // add your code
                 clip = ClipData.newPlainText("copiedColor", paletteDetail.get("color_1"));
                 clipboard.setPrimaryClip(clip);
+                Toast.makeText(Details.this, "Copied", Toast.LENGTH_SHORT).show();
                 break;
 
             case R.id.colorTwoTextView:
                 // add your code
                 clip = ClipData.newPlainText("copiedColor", paletteDetail.get("color_2"));
                 clipboard.setPrimaryClip(clip);
+                Toast.makeText(Details.this, "Copied", Toast.LENGTH_SHORT).show();
                 break;
 
             case R.id.colorThreeTextView:
                 // add your code
                 clip = ClipData.newPlainText("copiedColor", paletteDetail.get("color_3"));
                 clipboard.setPrimaryClip(clip);
+                Toast.makeText(Details.this, "Copied", Toast.LENGTH_SHORT).show();
                 break;
 
             case R.id.colorFourTextView:
                 // add your code
                 clip = ClipData.newPlainText("copiedColor", paletteDetail.get("color_4"));
                 clipboard.setPrimaryClip(clip);
+                Toast.makeText(Details.this, "Copied", Toast.LENGTH_SHORT).show();
                 break;
             default:
                 break;
