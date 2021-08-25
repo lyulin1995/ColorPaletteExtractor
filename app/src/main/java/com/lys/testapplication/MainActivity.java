@@ -108,39 +108,7 @@ public class MainActivity extends AppCompatActivity {
             startActivity(new Intent(getApplicationContext(), ResetPassword.class));
         }
 
-        if (item.getItemId() == R.id.updateEmailMenu){
-            View view = inflater.inflate(R.layout.reset_pop, null);
-            reset_alert.setTitle("Update Email").setMessage("Enter New Email Address.")
-                    .setPositiveButton("Update", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            // validate the email address
-                            EditText email = view.findViewById(R.id.reset_email_pop);
-                            if (email.getText().toString().isEmpty()){
-                                email.setError("Required Field");
-                                return;
-                            }
-                            // send the reset link
-                            FirebaseUser user = auth.getCurrentUser();
-                            user.updateEmail(email.getText().toString()).addOnSuccessListener(new OnSuccessListener<Void>() {
-                                @Override
-                                public void onSuccess(Void unused) {
-                                    Toast.makeText(MainActivity.this, "Email Updated", Toast.LENGTH_SHORT).show();
-                                }
-                            }).addOnFailureListener(new OnFailureListener() {
-                                @Override
-                                public void onFailure(@NonNull Exception e) {
-                                    Toast.makeText(MainActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
 
-                                }
-                            });
-
-                        }
-                    }).setNegativeButton("Cancel", null)
-                    .setView(view)
-                    .create().show();
-
-        }
 
         if (item.getItemId() == R.id.delete_account_menu){
             reset_alert.setTitle("Delete Account Permanently ?")
