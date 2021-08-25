@@ -121,6 +121,9 @@ public class PaletteActivity extends AppCompatActivity {
                     txt1.setText("Color 1");
                     String hex =  Integer.toHexString(color_1.getRgb());
                     paletteObj.setColorOne(hex);
+                }else{
+                    txt1.setText("No color is extracted");
+                    paletteObj.setColorOne("0000");
                 }
 
                 Palette.Swatch color_2 = palette.getLightVibrantSwatch();
@@ -130,6 +133,9 @@ public class PaletteActivity extends AppCompatActivity {
                     txt2.setText("Color 2");
                     String hex =  Integer.toHexString(color_2.getRgb());
                     paletteObj.setColorTwo(hex);
+                }else{
+                    txt2.setText("No color is extracted");
+                    paletteObj.setColorTwo("0000");
                 }
 
                 Palette.Swatch color_3 = palette.getLightMutedSwatch();
@@ -139,6 +145,9 @@ public class PaletteActivity extends AppCompatActivity {
                     txt3.setText("Color 3");
                     String hex =  Integer.toHexString(color_3.getRgb());
                     paletteObj.setColorThree(hex);
+                }else{
+                    txt3.setText("No color is extracted");
+                    paletteObj.setColorThree("0000");
                 }
 
                 Palette.Swatch color_4 = palette.getDarkMutedSwatch();
@@ -148,6 +157,9 @@ public class PaletteActivity extends AppCompatActivity {
                     txt4.setText("Color 4");
                     String hex =  Integer.toHexString(color_4.getRgb());
                     paletteObj.setColorFour(hex);
+                }else{
+                    txt4.setText("No color is extracted");
+                    paletteObj.setColorFour("0000");
                 }
             }
         });

@@ -29,10 +29,10 @@
         android:layout_height="0dp"
         android:layout_weight="1"
         android:gravity="center"
-        android:textAlignment="center"
-        android:textColor="#FFFFFF"
-        android:textSize="18sp"
         android:onClick="onClickCopy"
+        android:textAlignment="center"
+        android:textColor="#FFBBBB"
+        android:textSize="18sp"
         android:textStyle="bold" />
 
     <TextView
@@ -65,10 +65,10 @@
         android:layout_height="0dp"
         android:layout_weight="1"
         android:gravity="center"
-        android:textAlignment="center"
-        android:textColor="#FFFFFF"
-        android:textSize="18sp"
         android:onClick="onClickCopy"
+        android:textAlignment="center"
+        android:textColor="#FFBBBB"
+        android:textSize="18sp"
         android:textStyle="bold" />
 
 

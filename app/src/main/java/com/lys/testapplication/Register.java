@@ -118,7 +118,7 @@ public class Register extends AppCompatActivity {
                         //Creates new firebase user document with proper attributes and auth ID as document id
                         db.collection("user").document(email).set(user);
                         // send user to next page
-                        startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                        startActivity(new Intent(getApplicationContext(), SavedPaletteActivity.class));
                         finish();  // don't want user come back registration activity
 
                     }

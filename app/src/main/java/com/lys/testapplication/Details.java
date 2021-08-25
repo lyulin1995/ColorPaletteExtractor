@@ -12,6 +12,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -102,6 +103,9 @@ public class Details extends AppCompatActivity {
         if (Color_1 != null) {
             textView1.setBackgroundColor(intColor_1);
             textView1.setText("Color 1");
+            if (intColor_1 == 0000) {
+                textView1.setText("No color is extracted");
+            }
         }
 
         String Color_2 = paletteDetail.get("color_2");
@@ -109,6 +113,9 @@ public class Details extends AppCompatActivity {
         if (Color_2 != null) {
             textView2.setBackgroundColor(intColor_2);
             textView2.setText("Color 2");
+            if (intColor_2 == 0000) {
+                textView2.setText("No color is extracted");
+            }
         }
 
         String Color_3 = paletteDetail.get("color_3");
@@ -116,6 +123,9 @@ public class Details extends AppCompatActivity {
         if (Color_3 != null) {
             textView3.setBackgroundColor(intColor_3);
             textView3.setText("Color 3");
+            if (intColor_3 == 0000) {
+                textView3.setText("No color is extracted");
+            }
         }
 
         String Color_4 = paletteDetail.get("color_4");
@@ -123,6 +133,9 @@ public class Details extends AppCompatActivity {
         if (Color_4 != null) {
             textView4.setBackgroundColor(intColor_4);
             textView4.setText("Color 4");
+            if (intColor_4 == 0000) {
+                textView4.setText("No color is extracted");
+            }
         }
 
     }

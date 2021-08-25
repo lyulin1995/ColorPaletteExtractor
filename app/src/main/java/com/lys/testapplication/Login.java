@@ -132,9 +132,6 @@ public class Login extends AppCompatActivity {
         });
 
 
-
-
-
     }
 
     // check if the user has logged in before or not
@@ -142,7 +139,7 @@ public class Login extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         if (FirebaseAuth.getInstance().getCurrentUser() != null){
-            startActivity(new Intent(getApplicationContext(), MainActivity.class));
+            startActivity(new Intent(getApplicationContext(), SavedPaletteActivity.class));
             finish();
         }
     }
