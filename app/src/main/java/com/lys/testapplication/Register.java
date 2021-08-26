@@ -97,15 +97,14 @@ public class Register extends AppCompatActivity {
 
                 // Add a new document with a generated ID
                 db.collection("user")
-                        .add(user)
-                        .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                        .document(email).set(user)
+                        .addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override
-                            public void onSuccess(DocumentReference documentReference) {
-                                Log.d(TAG, "DocumentSnapshot added with ID: " + documentReference.getId());
+                            public void onSuccess(Void aVoid) {
+                                Log.d(TAG, "DocumentSnapshot added with ID: " + email);
                                 // send user to next page
-                                startActivity(new Intent(getApplicationContext(), SavedPaletteActivity.class));
+//                                startActivity(new Intent(getApplicationContext(), SavedPaletteActivity.class));
                                 finish();  // don't want user come back registration activity
-
                             }
                         })
                         .addOnFailureListener(new OnFailureListener() {

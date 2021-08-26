@@ -14,6 +14,7 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -38,6 +39,7 @@ public class PaletteActivity extends AppCompatActivity {
 
     private TextView txt1, txt2, txt3, txt4;
     EditText titleEditText;
+    Button btnUpload;
     Intent intent;
     String imagePath;
     Bitmap imageBitmap;
@@ -62,13 +64,14 @@ public class PaletteActivity extends AppCompatActivity {
         imagePath = intent.getStringExtra("imagePath");
         paletteCollectionRef = db.collection("palette");
         paletteObj = new PaletteObj();
+        btnUpload = findViewById(R.id.saveBtn);
 
         FirebaseUser loggedInUser = FirebaseAuth.getInstance().getCurrentUser();
         for (UserInfo profile : loggedInUser.getProviderData()){
             uid = profile.getUid();
         }
+        Log.d(TAG, uid);
         userRef = db.collection("user").document(uid);
-
         storageReference = FirebaseStorage.getInstance().getReference();
         StorageReference ref = storageReference.child("pictures/" + imagePath);
         Log.d(TAG, "pictures/" + imagePath);
@@ -78,6 +81,7 @@ public class PaletteActivity extends AppCompatActivity {
             public void onSuccess(byte[] bytes) {
                 imageBitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
                 createPalette(imageBitmap);
+                btnUpload.setEnabled(true);
                 paletteImageView.setImageBitmap(imageBitmap);
 //                if (palette.get("dominantColor") != null) {
 //                    paletteImageView.setBackgroundColor(Color.parseColor(palette.get("dominantColor")));
@@ -164,6 +168,7 @@ public class PaletteActivity extends AppCompatActivity {
                 }
             }
         });
+
     }
 
     private void init() {
