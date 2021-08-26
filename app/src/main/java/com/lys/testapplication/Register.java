@@ -62,27 +62,27 @@ public class Register extends AppCompatActivity {
                 String email = registerEmail.getText().toString();
                 String password = registerPassword.getText().toString();
                 String confPass = registerConfPass.getText().toString();
-                if (fullName.isEmpty()){
+                if (fullName.isEmpty()) {
                     registerFullName.setError("Full Name is Required");
                     return;
                 }
 
-                if (email.isEmpty()){
+                if (email.isEmpty()) {
                     registerEmail.setError("Email is Required");
                     return;
                 }
 
-                if (password.isEmpty()){
+                if (password.isEmpty()) {
                     registerPassword.setError("Password is Required");
                     return;
                 }
 
-                if (confPass.isEmpty()){
+                if (confPass.isEmpty()) {
                     registerConfPass.setError("Confirm Password is Required");
                     return;
                 }
 
-                if (!password.equals(confPass)){
+                if (!password.equals(confPass)) {
                     registerConfPass.setError("Password Do not match");
                     return;
                 }
@@ -114,7 +114,23 @@ public class Register extends AppCompatActivity {
                                 Toast.makeText(Register.this, e.getMessage(), Toast.LENGTH_SHORT).show();
                             }
                         });
-                }
+
+                // Store the email and password
+                fAuth.createUserWithEmailAndPassword(email, password).addOnSuccessListener(new OnSuccessListener<AuthResult>() {
+                    @Override
+                    public void onSuccess(AuthResult authResult) {
+                        // send user to next page
+                        startActivity(new Intent(getApplicationContext(), SavedPaletteActivity.class));
+                        finish();  // don't want user come back registration activity
+
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(Register.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
         });
 
     }
