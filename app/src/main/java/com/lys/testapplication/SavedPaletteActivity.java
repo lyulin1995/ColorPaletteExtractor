@@ -136,6 +136,7 @@ public class SavedPaletteActivity extends AppCompatActivity {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             FirebaseUser user = auth.getCurrentUser();
+                            userRef.delete();
                             user.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
                                 @Override
                                 public void onSuccess(Void unused) {
