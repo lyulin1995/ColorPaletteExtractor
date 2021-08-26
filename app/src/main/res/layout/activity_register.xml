@@ -17,7 +17,6 @@
         android:ems="10"
         android:hint="Full Name"
         android:inputType="textPersonName"
-        android:text="admin"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
@@ -33,7 +32,6 @@
         android:ems="10"
         android:hint="Email Address"
         android:inputType="textEmailAddress"
-        android:text="admin@gmail.com"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/registerFullName" />
@@ -48,7 +46,6 @@
         android:ems="10"
         android:hint="Password"
         android:inputType="textPassword"
-        android:text="adminadmin"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/registerEmail" />
@@ -63,7 +60,6 @@
         android:ems="10"
         android:hint="Comfirm Password"
         android:inputType="textPassword"
-        android:text="adminadmin"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
@@ -76,30 +72,36 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="24dp"
         android:layout_marginEnd="16dp"
-        android:text="Register"
-        android:textColor="@color/textColorPrimary"
-        android:textAllCaps="false"
-        android:textSize="16sp"
         android:backgroundTint="@color/colorPrimaryDark"
+        android:text="Register"
+        android:textAllCaps="false"
+        android:textColor="@color/textColorPrimary"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/confPassword" />
+        app:layout_constraintTop_toBottomOf="@+id/confPassword"
+        app:layout_constraintVertical_bias="0.0" />
 
     <Button
         android:id="@+id/gotoLogin"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="12dp"
         android:layout_marginEnd="16dp"
         android:backgroundTint="@color/Surface"
         android:text="Back to Login Page"
         android:textAllCaps="false"
         android:textColor="@android:color/darker_gray"
         android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/registerBtn" />
+        app:layout_constraintTop_toBottomOf="@+id/registerBtn"
+        app:layout_constraintVertical_bias="0.072" />
 
     <TextView
         android:id="@+id/textView6"

@@ -22,11 +22,13 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="60dp"
-        android:layout_marginEnd="80dp"
+        android:layout_marginEnd="84dp"
         android:onClick="onClickGallery"
         android:text="@string/btn_label_gallery"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/uploadImageView" />
+        app:layout_constraintTop_toBottomOf="@+id/uploadImageView"
+        app:layout_constraintVertical_bias="0.0" />
 
     <Button
         android:id="@+id/cameraBtn"
@@ -36,10 +38,12 @@
         android:layout_marginTop="60dp"
         android:onClick="onClickCamera"
         android:text="@string/btn_label_camera"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/galleryBtn"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/uploadImageView" />
+        app:layout_constraintTop_toBottomOf="@+id/uploadImageView"
+        app:layout_constraintVertical_bias="0.0" />
 
     <TextView
         android:id="@+id/textView"
@@ -56,13 +60,14 @@
         android:id="@+id/generateBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="200dp"
         android:layout_marginBottom="100dp"
         android:enabled="false"
         android:onClick="onClickGenerate"
         android:text="@string/btn_label_generate"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.456"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/uploadImageView" />
+        app:layout_constraintTop_toBottomOf="@+id/cameraBtn"
+        app:layout_constraintVertical_bias="1.0" />
 </androidx.constraintlayout.widget.ConstraintLayout>
