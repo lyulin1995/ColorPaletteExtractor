@@ -64,14 +64,14 @@ public class Details extends AppCompatActivity {
 
         Intent intent = getIntent();
         paletteObj = (Map<String, Object>)intent.getSerializableExtra("paletteObj");
+
         title = paletteObj.get("title").toString();
         paletteDetail = (Map<String, String>) paletteObj.get("paletteDetail");
-
-        clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+        imagePath = paletteObj.get("imagePath").toString();
 
         init();
         textTitle.setText(title);
-        imagePath = paletteObj.get("imagePath").toString();
+        clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
 
         FirebaseUser loggedInUser = FirebaseAuth.getInstance().getCurrentUser();
         for (UserInfo profile : loggedInUser.getProviderData()){
@@ -157,28 +157,28 @@ public class Details extends AppCompatActivity {
                 // add your code
                 clip = ClipData.newPlainText("copiedColor", paletteDetail.get("color_1"));
                 clipboard.setPrimaryClip(clip);
-                Toast.makeText(Details.this, "Copied", Toast.LENGTH_SHORT).show();
+                Toast.makeText(Details.this, "Color 1 Copied", Toast.LENGTH_SHORT).show();
                 break;
 
             case R.id.colorTwoTextView:
                 // add your code
                 clip = ClipData.newPlainText("copiedColor", paletteDetail.get("color_2"));
                 clipboard.setPrimaryClip(clip);
-                Toast.makeText(Details.this, "Copied", Toast.LENGTH_SHORT).show();
+                Toast.makeText(Details.this, "Color 2 Copied", Toast.LENGTH_SHORT).show();
                 break;
 
             case R.id.colorThreeTextView:
                 // add your code
                 clip = ClipData.newPlainText("copiedColor", paletteDetail.get("color_3"));
                 clipboard.setPrimaryClip(clip);
-                Toast.makeText(Details.this, "Copied", Toast.LENGTH_SHORT).show();
+                Toast.makeText(Details.this, "Color 3 Copied", Toast.LENGTH_SHORT).show();
                 break;
 
             case R.id.colorFourTextView:
                 // add your code
                 clip = ClipData.newPlainText("copiedColor", paletteDetail.get("color_4"));
                 clipboard.setPrimaryClip(clip);
-                Toast.makeText(Details.this, "Copied", Toast.LENGTH_SHORT).show();
+                Toast.makeText(Details.this, "Color 4 Copied", Toast.LENGTH_SHORT).show();
                 break;
             default:
                 break;

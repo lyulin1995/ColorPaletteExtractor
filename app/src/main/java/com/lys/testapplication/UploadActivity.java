@@ -225,7 +225,6 @@ public class UploadActivity extends AppCompatActivity {
         }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                Toast.makeText(UploadActivity.this, "A photo was uploaded", Toast.LENGTH_SHORT).show();
                 Intent paletteActivity = new Intent(UploadActivity.this, PaletteActivity.class);
                 Log.d(TAG, fullPath);
                 paletteActivity.putExtra("imagePath", fullPath);

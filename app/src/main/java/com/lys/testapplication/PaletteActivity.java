@@ -61,6 +61,7 @@ public class PaletteActivity extends AppCompatActivity {
         intent = getIntent();
         imagePath = intent.getStringExtra("imagePath");
         paletteCollectionRef = db.collection("palette");
+        paletteObj = new PaletteObj();
 
         FirebaseUser loggedInUser = FirebaseAuth.getInstance().getCurrentUser();
         for (UserInfo profile : loggedInUser.getProviderData()){

@@ -21,6 +21,7 @@
         android:id="@+id/paletteDetailImageView"
         android:layout_width="match_parent"
         android:layout_height="353dp"
+        android:paddingEnd="20dp"
         android:scaleType="fitCenter" />
 
     <TextView

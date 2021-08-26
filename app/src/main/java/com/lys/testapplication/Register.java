@@ -102,34 +102,19 @@ public class Register extends AppCompatActivity {
                             @Override
                             public void onSuccess(DocumentReference documentReference) {
                                 Log.d(TAG, "DocumentSnapshot added with ID: " + documentReference.getId());
+                                // send user to next page
+                                startActivity(new Intent(getApplicationContext(), SavedPaletteActivity.class));
+                                finish();  // don't want user come back registration activity
+
                             }
                         })
                         .addOnFailureListener(new OnFailureListener() {
                             @Override
                             public void onFailure(@NonNull Exception e) {
-                                Log.w(TAG, "Error adding document", e);
+                                Toast.makeText(Register.this, e.getMessage(), Toast.LENGTH_SHORT).show();
                             }
                         });
-
-                // Store the email and password
-                fAuth.createUserWithEmailAndPassword(email, password).addOnSuccessListener(new OnSuccessListener<AuthResult>() {
-                    @Override
-                    public void onSuccess(AuthResult authResult) {
-                        //Creates new firebase user document with proper attributes and auth ID as document id
-                        db.collection("user").document(email).set(user);
-                        // send user to next page
-                        startActivity(new Intent(getApplicationContext(), SavedPaletteActivity.class));
-                        finish();  // don't want user come back registration activity
-
-                    }
-                }).addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Toast.makeText(Register.this, e.getMessage(), Toast.LENGTH_SHORT).show();
-                    }
-                });
-
-            }
+                }
         });
 
     }

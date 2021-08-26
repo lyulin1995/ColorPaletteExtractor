@@ -32,6 +32,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -79,12 +80,17 @@ public class SavedPaletteActivity extends AppCompatActivity {
                     // Get important information
                     if (user != null) {
                         listPaletteObj = (List<Map<String, Object>>) user.get("savedPalette");
+                        Collections.sort(listPaletteObj, (paletteObj1, paletteObj2) -> {
+                            return (int) (Long.parseLong(paletteObj2.get("timestamp").toString()) - Long.parseLong(paletteObj1.get("timestamp").toString()));
+                        });
                         items.addAll(listPaletteObj);
+                        Log.d(TAG, items.toString());
                     }
                     recyclerView = findViewById(R.id.recyclerView);
                     recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
                     adapter = new Adapter(getApplicationContext(), items);
                     recyclerView.setAdapter(adapter);
+                    adapter.notifyDataSetChanged();
                 }
                 else {
                     Log.d(TAG, "get failed with: ", task.getException());

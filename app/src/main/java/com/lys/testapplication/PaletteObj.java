@@ -1,5 +1,6 @@
 package com.lys.testapplication;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -7,6 +8,7 @@ public class PaletteObj {
     public String imagePath;
     public String title;
     public Map<String, Object> paletteDetail;
+    public long timestamp;
 
     public PaletteObj (){
         // Empty needed for firebase
@@ -21,6 +23,8 @@ public class PaletteObj {
         paletteDetail.put("color_3", "");
         paletteDetail.put("color_4", "");
         this.paletteDetail = paletteDetail;
+        Date date = new Date();
+        this.timestamp = date.getTime();
     }
 
     public void setPaletteDetail( Map<String, Object> paletteDetail) {
@@ -50,4 +54,6 @@ public class PaletteObj {
     public String getTitle() {
         return this.title;
     }
+
+    public long getTimestamp() { return this.timestamp; }
 }
